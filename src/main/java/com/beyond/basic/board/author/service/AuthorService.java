@@ -6,16 +6,16 @@ import com.beyond.basic.board.author.dtos.AuthorDetailDto;
 import com.beyond.basic.board.author.dtos.AuthorListDto;
 import com.beyond.basic.board.author.repository.AuthorRepository;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional//트랜잭션의 단위는 Service의 메서드가 된다.
+@Transactional//org.spring으로 import!//트랜잭션의 단위는 Service의 메서드가 된다.
 public class AuthorService {
     private final AuthorRepository authorRepository;
     @Autowired

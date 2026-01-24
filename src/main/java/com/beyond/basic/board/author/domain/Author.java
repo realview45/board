@@ -1,7 +1,10 @@
 package com.beyond.basic.board.author.domain;
 
+import com.beyond.basic.board.post.domain.Post;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity//jpa가 관리하도록 엔티티 위임
 @NoArgsConstructor
@@ -19,5 +22,6 @@ public class Author {
     private String password;
     @Builder.Default
     private Role role = Role.USER;
-    //private List<Post> postList;
+    @OneToMany(mappedBy = "author")//, fetch = FetchType.LAZY, cascade = CascadeType.ALL)//defaultLAZY
+    private List<Post> postList;
 }
