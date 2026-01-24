@@ -1,9 +1,11 @@
 package com.beyond.basic.board.author.service;
 
+import com.beyond.basic.board.author.dtos.AuthorCreateDto;
 import com.beyond.basic.board.author.dtos.AuthorDetailDto;
 import com.beyond.basic.board.author.dtos.AuthorListDto;
 import com.beyond.basic.board.author.repository.AuthorRepository;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,10 @@ public class AuthorService {
     @Autowired
     public AuthorService(AuthorRepository authorRepository) {
         this.authorRepository = authorRepository;
+    }
+
+    public void create(@Valid AuthorCreateDto dto) {
+        authorRepository.save(dto.toEntity());
     }
 
     public List<AuthorListDto> findAll() {

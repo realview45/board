@@ -26,6 +26,7 @@ public class AuthorController {
 //    url : /author/create
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody @Valid AuthorCreateDto dto){
+        authorService.create(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body("회원가입 완료");
     }
 //	2. 회원목록조회 : 모든 회원의 id, name, email의 리스트를 돌려줍니다.
