@@ -34,6 +34,7 @@ public class AuthorController {
     @GetMapping("/list")
     public List<AuthorListDto> findAll(){
         List<AuthorListDto> dtoList = authorService.findAll();
+        authorService.findAll();
         return dtoList;
     }
 //	3. 회원상세조회 : id를 받아 그 회원의 id, name, email, postCount, password, role을 돌려줍니다.
