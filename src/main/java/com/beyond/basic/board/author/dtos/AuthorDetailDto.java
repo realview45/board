@@ -20,7 +20,7 @@ public class AuthorDetailDto {
 
     public static AuthorDetailDto fromEntity(Author author) {
         return AuthorDetailDto.builder().id(author.getId()).name(author.getName()).email(author.getEmail())
-                .postCount(author.getPostList().size())
+                //.postCount(author.getPostList().size())
                 .role(author.getRole()).build();
     }
 }
