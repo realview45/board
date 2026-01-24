@@ -4,6 +4,7 @@ import com.beyond.basic.board.author.domain.Author;
 import com.beyond.basic.board.author.dtos.AuthorCreateDto;
 import com.beyond.basic.board.author.dtos.AuthorDetailDto;
 import com.beyond.basic.board.author.dtos.AuthorListDto;
+import com.beyond.basic.board.author.dtos.AuthorUpdatePwDto;
 import com.beyond.basic.board.author.repository.AuthorRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
@@ -39,5 +40,12 @@ public class AuthorService {
     public void delete(Long id) {
         Author author = authorRepository.findById(id).orElseThrow(()->new EntityNotFoundException("엔티티(Author)가 이미 없습니다."));
         authorRepository.delete(author);
+    }
+
+    public void updatePw(AuthorUpdatePwDto dto) {
+        //로그인 상태에서는 아래줄이 필요없음
+        Author author = authorRepository.findByEmail(dto.getEmail()).orElseThrow(()->new EntityNotFoundException("엔티티(Author)가 없습니다."));
+        //dirtychecking으로 save필요없이 변경만 해주면된다.
+        author.updatePw(dto.getPassword());
     }
 }

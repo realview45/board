@@ -24,4 +24,8 @@ public class Author {
     private Role role = Role.USER;
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)//, cascade = CascadeType.ALL)//defaultLAZY
     private List<Post> postList;
+
+    public void updatePw(String password) {
+        this.password = password;
+    }
 }
