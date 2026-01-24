@@ -1,5 +1,6 @@
 package com.beyond.basic.board.author.dtos;
 
+import com.beyond.basic.board.author.domain.Author;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,4 +19,8 @@ public class AuthorCreateDto {
     private String email;
     @NotBlank
     private String password;
+
+    public Author toEntity() {
+        return Author.builder().name(this.name).email(this.email).password(this.password).build();
+    }
 }
