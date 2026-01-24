@@ -38,7 +38,7 @@ public class AuthorController {
         authorService.findAll();
         return dtoList;
     }
-//	3. 회원상세조회 : id를 받아 그 회원의 id, name, email, postCount, password, role을 돌려줍니다.
+//	2-2. 회원상세조회 : id를 받아 그 회원의 id, name, email, postCount, password, role을 돌려줍니다.
 //            (없는 회원id 조회시 에러)
 //    url : /author/{id}
     @GetMapping("/{id}")
@@ -46,11 +46,17 @@ public class AuthorController {
         AuthorDetailDto dto = authorService.findById(id);
         return dto;
     }
+//   3. 회원삭제(hard delete) : id를 받아 그 회원을 삭제합니다. 질문1
+//            (없는 회원id 조회시 에러)
+//    url : /author/delete/{id}
     @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id){
         authorService.delete(id);
         return "삭제 완료.";
     }
+//   4. 비밀번호 업데이트 : email, password를 받아 해당 email의 회원의 비밀번호를 변경합니다.
+//            (없는 회원email 조회시 에러)
+//    url : /author/update/password
     @PatchMapping("/update/password")
     public String updatePw(@RequestBody AuthorUpdatePwDto dto){
         authorService.updatePw(dto);
