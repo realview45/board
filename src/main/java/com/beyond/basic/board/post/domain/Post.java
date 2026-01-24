@@ -24,4 +24,8 @@ public class Post {
     private Author author;
     @Builder.Default
     private String delYn = "N";
+
+    public void delete() {
+        this.delYn="Y";
+    }
 }
