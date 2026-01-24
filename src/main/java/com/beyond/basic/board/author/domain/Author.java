@@ -22,6 +22,6 @@ public class Author {
     private String password;
     @Builder.Default
     private Role role = Role.USER;
-    @OneToMany(mappedBy = "author")//, fetch = FetchType.LAZY, cascade = CascadeType.ALL)//defaultLAZY
+    @OneToMany(mappedBy = "author", fetch = FetchType.EAGER)//, cascade = CascadeType.ALL)//defaultLAZY
     private List<Post> postList;
 }
