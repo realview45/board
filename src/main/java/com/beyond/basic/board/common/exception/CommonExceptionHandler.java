@@ -54,7 +54,7 @@ public class CommonExceptionHandler {
     public ResponseEntity<?> DataIntegrityViolationException(Exception e) {
         e.printStackTrace();
         CommonErrorDto dto = CommonErrorDto.builder()
-                .status_code(400)//확실하지않음
+                .status_code(400)//TODO: 확실하지않음
                 .error_message("게시글을 모두 삭제후 요청")
                 .build();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(dto);
