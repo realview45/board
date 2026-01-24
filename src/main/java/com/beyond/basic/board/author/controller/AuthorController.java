@@ -45,4 +45,9 @@ public class AuthorController {
         AuthorDetailDto dto = authorService.findById(id);
         return dto;
     }
+    @DeleteMapping("/{id}")
+    public String delete(@PathVariable Long id){
+        authorService.delete(id);
+        return "삭제 완료.";
+    }
 }

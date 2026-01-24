@@ -35,4 +35,9 @@ public class AuthorService {
         Author author = authorRepository.findById(id).orElseThrow(()->new EntityNotFoundException("엔티티(Author)가 없습니다."));
         return AuthorDetailDto.fromEntity(author);
     }
+
+    public void delete(Long id) {
+        Author author = authorRepository.findById(id).orElseThrow(()->new EntityNotFoundException("엔티티(Author)가 이미 없습니다."));
+        authorRepository.delete(author);
+    }
 }
