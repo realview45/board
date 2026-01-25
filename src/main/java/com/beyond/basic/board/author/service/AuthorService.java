@@ -1,10 +1,7 @@
 package com.beyond.basic.board.author.service;
 
 import com.beyond.basic.board.author.domain.Author;
-import com.beyond.basic.board.author.dtos.AuthorCreateDto;
-import com.beyond.basic.board.author.dtos.AuthorDetailDto;
-import com.beyond.basic.board.author.dtos.AuthorListDto;
-import com.beyond.basic.board.author.dtos.AuthorUpdatePwDto;
+import com.beyond.basic.board.author.dtos.*;
 import com.beyond.basic.board.author.repository.AuthorRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
@@ -14,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,5 +48,16 @@ public class AuthorService {
         Author author = authorRepository.findByEmail(dto.getEmail()).orElseThrow(()->new EntityNotFoundException("엔티티(Author)가 없습니다."));
         //dirtychecking으로 save필요없이 변경만 해주면된다.
         author.updatePw(dto.getPassword());
+    }
+
+    public void login(AuthorLoginDto dto) {
+        boolean loginSuccess = true;
+        Optional<Author> author = authorRepository.findByEmail(dto.getEmail());
+        if(!author.isPresent()||!passwordEncoder.matches(dto.getPassword(),author.get().getPassword())){
+            loginSuccess=false;
+        }
+        if(!loginSuccess){
+            throw new IllegalArgumentException("이메일 또는 비밀번호가 다릅니다.");
+        }
     }
 }
