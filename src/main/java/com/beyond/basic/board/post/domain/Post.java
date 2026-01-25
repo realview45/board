@@ -1,6 +1,7 @@
 package com.beyond.basic.board.post.domain;
 
 import com.beyond.basic.board.author.domain.Author;
+import com.beyond.basic.board.common.domain.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,7 +11,7 @@ import lombok.*;
 @Builder
 @Getter
 @ToString
-public class Post {
+public class Post extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

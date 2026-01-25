@@ -1,5 +1,6 @@
 package com.beyond.basic.board.author.domain;
 
+import com.beyond.basic.board.common.domain.BaseTimeEntity;
 import com.beyond.basic.board.post.domain.Post;
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,7 +13,7 @@ import java.util.List;
 @Builder
 @Getter
 @ToString
-public class Author {
+public class Author extends BaseTimeEntity {
     @Id//primary key설정
     @GeneratedValue(strategy = GenerationType.IDENTITY)//auto_increment설정
     private Long id;
