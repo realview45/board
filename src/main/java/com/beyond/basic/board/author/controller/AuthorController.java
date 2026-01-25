@@ -67,6 +67,6 @@ public class AuthorController {
     public String login(@RequestBody AuthorLoginDto dto){
         Author author = authorService.login(dto);
         String token = jwtTokenProvider.createToken(author);
-        return "로그인 완료.";
+        return token;
     }
 }
