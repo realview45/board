@@ -20,7 +20,7 @@ public class AuthorCreateDto {
     @NotBlank
     private String password;
 
-    public Author toEntity() {
-        return Author.builder().name(this.name).email(this.email).password(this.password).build();
+    public Author toEntity(String encodedPassword) {
+        return Author.builder().name(this.name).email(this.email).password(encodedPassword).build();
     }
 }

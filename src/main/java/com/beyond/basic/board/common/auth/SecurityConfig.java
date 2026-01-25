@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -23,5 +25,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(a->a.requestMatchers(
                         "/author/create", "/author/login").permitAll().anyRequest().authenticated())
                 .build();
+    }
+    @Bean
+    public PasswordEncoder pwEncoder(){
+//        들어가서 Component 붙이고싶은데 안되어서 Bean사용 메서드를 통해 싱글톤객체만들구리
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 }
