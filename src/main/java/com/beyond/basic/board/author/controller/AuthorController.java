@@ -1,7 +1,9 @@
 package com.beyond.basic.board.author.controller;
 
+import com.beyond.basic.board.author.domain.Author;
 import com.beyond.basic.board.author.dtos.*;
 import com.beyond.basic.board.author.service.AuthorService;
+import com.beyond.basic.board.common.auth.JwtTokenProvider;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,9 +16,11 @@ import java.util.List;
 @RequestMapping("/author")
 public class AuthorController {
     private final AuthorService authorService;
+    private final JwtTokenProvider jwtTokenProvider;
     @Autowired
-    public AuthorController(AuthorService authorService) {
+    public AuthorController(AuthorService authorService, JwtTokenProvider jwtTokenProvider) {
         this.authorService = authorService;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 //	1. 회원가입 : name, email, password를 받아 이메일이 중복인지 확인 후, 저장
 //	(이메일 중복시 에러)
@@ -61,7 +65,8 @@ public class AuthorController {
     }
     @PostMapping("/login")
     public String login(@RequestBody AuthorLoginDto dto){
-        authorService.login(dto);
+        Author author = authorService.login(dto);
+        String token = jwtTokenProvider.createToken(author);
         return "로그인 완료.";
     }
 }

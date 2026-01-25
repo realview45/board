@@ -50,7 +50,7 @@ public class AuthorService {
         author.updatePw(dto.getPassword());
     }
 
-    public void login(AuthorLoginDto dto) {
+    public Author login(AuthorLoginDto dto) {
         boolean loginSuccess = true;
         Optional<Author> author = authorRepository.findByEmail(dto.getEmail());
         if(!author.isPresent()||!passwordEncoder.matches(dto.getPassword(),author.get().getPassword())){
@@ -59,5 +59,6 @@ public class AuthorService {
         if(!loginSuccess){
             throw new IllegalArgumentException("이메일 또는 비밀번호가 다릅니다.");
         }
+        return author.get();
     }
 }
