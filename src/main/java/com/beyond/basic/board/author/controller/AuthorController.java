@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,6 +35,9 @@ public class AuthorController {
 //	2. 회원목록조회 : 모든 회원의 id, name, email의 리스트를 돌려줍니다.
 //     url : /author/list
     @GetMapping("/list")
+//    PreAuthorize : Authentication객체안의 권한정보를 확인하는 어노테이션
+//    2개이상의 Role을 허용하는 경우 : "hasRole('ADMIN') or hasRole('SELLER')"
+    @PreAuthorize("hasRole('ADMIN')")
     public List<AuthorListDto> findAll(){
         List<AuthorListDto> dtoList = authorService.findAll();
         authorService.findAll();

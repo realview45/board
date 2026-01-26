@@ -27,12 +27,13 @@ public class JwtTokenFilter extends GenericFilter {
         try {
             HttpServletRequest req = (HttpServletRequest) servletRequest;
             String bearerToken = req.getHeader("Authorization");
-            System.out.println(bearerToken);
 
             //토큰이 없다면 다음체인으로 넘어가기
             if (bearerToken == null) {
                 filterChain.doFilter(servletRequest, servletResponse);
+                return;
             }
+            System.out.println(bearerToken);
 
             String token = bearerToken.substring(7);
 
