@@ -21,6 +21,8 @@ public class Author extends BaseTimeEntity {
     @Column(length=50, unique = true, nullable = false)
     private String email;
     private String password;
+    //    enum타입은 내부적으로 숫자값을 가지고 있으나, 문자형태로 저장하겠다는 어노테이션
+    @Enumerated(EnumType.STRING)
     @Builder.Default
     private Role role = Role.USER;
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)//, cascade = CascadeType.ALL)//defaultLAZY
