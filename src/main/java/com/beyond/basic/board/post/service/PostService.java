@@ -9,6 +9,7 @@ import com.beyond.basic.board.post.dtos.PostListDto;
 import com.beyond.basic.board.post.repository.PostRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,8 +27,8 @@ public class PostService {
         this.authorRepository = authorRepository;
     }
     public void create(PostCreateDto dto) {
-        //로그인 이후 아래줄은 날릴예정
-        Author author = authorRepository.findByEmail(dto.getAuthorEmail()).orElseThrow(()->new EntityNotFoundException("글쓴이가 존재하지 않습니다."));
+        String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        Author author = authorRepository.findByEmail(email).orElseThrow(()->new EntityNotFoundException("글쓴이가 존재하지 않습니다."));
         postRepository.save(dto.toEntity(author));
     }
 
