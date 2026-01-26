@@ -1,5 +1,6 @@
-package com.beyond.basic.board.common.auth;
+package com.beyond.basic.board.common.configs;
 
+import com.beyond.basic.board.common.auth.JwtTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
