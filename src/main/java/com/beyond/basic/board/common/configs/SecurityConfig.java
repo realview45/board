@@ -1,6 +1,7 @@
 package com.beyond.basic.board.common.configs;
 
 import com.beyond.basic.board.common.auth.JwtTokenFilter;
+import com.beyond.basic.board.common.exception.JwtAuthenticationHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,13 +11,16 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 public class SecurityConfig {
     private final JwtTokenFilter jwtTokenFilter;
+    private final JwtAuthenticationHandler jwtAuthenticationHandler;
     @Autowired
-    public SecurityConfig(JwtTokenFilter jwtTokenFilter) {
+    public SecurityConfig(JwtTokenFilter jwtTokenFilter, JwtAuthenticationHandler jwtAuthenticationHandler) {
         this.jwtTokenFilter = jwtTokenFilter;
+        this.jwtAuthenticationHandler = jwtAuthenticationHandler;
     }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -29,7 +33,8 @@ public class SecurityConfig {
 //                세션로그인방식 비활성화
                 .sessionManagement(a->a.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 //                token을 검증하고, Authentication객체 생성
-//                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(e->e.authenticationEntryPoint(jwtAuthenticationHandler))
 //                지정한 특정url을 제외한 모든 요청에 대해서 authenticated(인증처리)하겠다라는 의미
                 .authorizeHttpRequests(a->a.requestMatchers(
                         "/author/create", "/author/login").permitAll().anyRequest().authenticated())
