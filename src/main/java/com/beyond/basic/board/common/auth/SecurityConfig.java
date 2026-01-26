@@ -1,5 +1,6 @@
 package com.beyond.basic.board.common.auth;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -11,6 +12,11 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecurityConfig {
+    private final JwtTokenFilter jwtTokenFilter;
+    @Autowired
+    public SecurityConfig(JwtTokenFilter jwtTokenFilter) {
+        this.jwtTokenFilter = jwtTokenFilter;
+    }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
@@ -21,6 +27,8 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
 //                세션로그인방식 비활성화
                 .sessionManagement(a->a.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                token을 검증하고, Authentication객체 생성
+//                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
 //                지정한 특정url을 제외한 모든 요청에 대해서 authenticated(인증처리)하겠다라는 의미
                 .authorizeHttpRequests(a->a.requestMatchers(
                         "/author/create", "/author/login").permitAll().anyRequest().authenticated())
