@@ -24,30 +24,36 @@ public class JwtTokenFilter extends GenericFilter {
     private String st_secret_key;
     @Override            //사용자의 http요청이 맨앞단에서 servletRequest로 변환되어 들어오고, 필터계층을 넣어준다.
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        HttpServletRequest req = (HttpServletRequest) servletRequest;
-        String bearerToken = req.getHeader("Authorization");
-        System.out.println(bearerToken);
+        try {
+            HttpServletRequest req = (HttpServletRequest) servletRequest;
+            String bearerToken = req.getHeader("Authorization");
+            System.out.println(bearerToken);
 
-        if(bearerToken==null){
-            filterChain.doFilter(servletRequest,servletResponse);
+            //토큰이 없다면 다음체인으로 넘어가기
+            if (bearerToken == null) {
+                filterChain.doFilter(servletRequest, servletResponse);
+            }
+
+            String token = bearerToken.substring(7);
+
+            //서버키를 가지고 페이로드를 파싱을해서 재암호화 검증 및 claims추출
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(st_secret_key)
+                    .build()
+                    .parseClaimsJws(token).getBody();
+
+            List<GrantedAuthority> authorities = new ArrayList<>();
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + claims.get("role")));
+
+
+            //인증객체생성
+            Authentication authentication = new UsernamePasswordAuthenticationToken(claims.getSubject(), token, authorities);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            //검증시에 에러가 난다면 token값이 다른것이므로 401에러(인증에러)
+        }catch(Exception e){
+            e.printStackTrace();
         }
-
-        String token = bearerToken.substring(7);
-
-        //서버키를 가지고 페이로드를 파싱을해서 재암호화
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(st_secret_key)
-                .build()
-                .parseClaimsJws(token).getBody();
-
-        List<GrantedAuthority>authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_" + claims.get("role")));
-
-
-        //인증객체생성
-        Authentication authentication = new UsernamePasswordAuthenticationToken(claims.getSubject(), token, authorities);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
         filterChain.doFilter(servletRequest,servletResponse);
     }
 }
