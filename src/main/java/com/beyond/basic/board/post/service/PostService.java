@@ -6,11 +6,17 @@ import com.beyond.basic.board.post.domain.Post;
 import com.beyond.basic.board.post.dtos.PostCreateDto;
 import com.beyond.basic.board.post.dtos.PostDetailDto;
 import com.beyond.basic.board.post.dtos.PostListDto;
+import com.beyond.basic.board.post.dtos.PostSearchDto;
 import com.beyond.basic.board.post.repository.PostRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,9 +37,15 @@ public class PostService {
         postRepository.save(dto.toEntity(author));
     }
 
-    public Page<PostListDto> findAll(Pageable pageable) {
+    public Page<PostListDto> findAll(Pageable pageable, PostSearchDto searchDto) {
 //        return postRepository.findAll().stream().filter(p->p.getDelYn().equals("N")).map(p->PostListDto.fromEntity(p)).collect(Collectors.toList());
-        return postRepository.findAll(pageable).map(p->PostListDto.fromEntity(p));
+        Specification<Post> specification = new Specification<Post>() {
+            @Override
+            public Predicate toPredicate(Root<Post> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                return null;
+            }
+        };
+        return postRepository.findAll(specification, pageable).map(p->PostListDto.fromEntity(p));
     }
 
     public PostDetailDto findById(Long id) {
