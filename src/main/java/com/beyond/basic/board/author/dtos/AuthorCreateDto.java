@@ -20,7 +20,8 @@ public class AuthorCreateDto {
     @NotBlank
     private String password;
 
-    public Author toEntity(String encodedPassword) {
-        return Author.builder().name(this.name).email(this.email).password(encodedPassword).build();
+    public Author toEntity(String encodedPassword, String profileUrl) {
+        return Author.builder().name(this.name).email(this.email).password(encodedPassword)
+                .profileImageUrl(profileUrl).build();
     }
 }

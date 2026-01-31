@@ -28,7 +28,12 @@ public class Author extends BaseTimeEntity {
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)//, cascade = CascadeType.ALL)//defaultLAZY
     private List<Post> postList;
 
+    private String profileImageUrl;
     public void updatePw(String password) {
         this.password = password;
+    }
+
+    public void updateProfileImageUrl(String url) {
+        profileImageUrl = url;
     }
 }

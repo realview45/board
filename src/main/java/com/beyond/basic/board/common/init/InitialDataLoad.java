@@ -26,6 +26,6 @@ public class InitialDataLoad implements CommandLineRunner {
             return;
         }
         authorRepository.save(Author.builder()
-                .name("admin").email("admain@naver.com").role(Role.ADMIN).password(passwordEncoder.encode("12341234")).build());
+                .name("admin").email("admin@naver.com").role(Role.ADMIN).password(passwordEncoder.encode("12341234")).build());
     }
 }

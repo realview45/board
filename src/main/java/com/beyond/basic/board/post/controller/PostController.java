@@ -3,15 +3,20 @@ package com.beyond.basic.board.post.controller;
 import com.beyond.basic.board.post.dtos.PostCreateDto;
 import com.beyond.basic.board.post.dtos.PostDetailDto;
 import com.beyond.basic.board.post.dtos.PostListDto;
+import com.beyond.basic.board.post.dtos.PostSearchDto;
 import com.beyond.basic.board.post.service.PostService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
+@Slf4j
 public class PostController {
     private final PostService postService;
     @Autowired
@@ -30,8 +35,11 @@ public class PostController {
 //    	5-1. 게시글목록조회 : 각 게시글의 id, title, category, authorEmail을 돌려줍니다.
 //    url : /posts
     @GetMapping("/posts")
-    public List<PostListDto> findAll(){
-        List<PostListDto> dtoList =postService.findAll();
+    public Page<PostListDto> findAll(@PageableDefault(size=10,sort="id", direction = Sort.Direction.DESC) Pageable pageable,
+                                     @ModelAttribute PostSearchDto searchDto){
+//        페이징처리를 위한 데이터 요청 형식 : localhost:8080/posts?page=0&size=5&sort=title,asc
+        log.info("dto:{}", searchDto);
+        Page<PostListDto> dtoList =postService.findAll(pageable,searchDto);
         return dtoList;
     }
 //    	5-2. 게시글조회 : id를 받아 그 게시글의 id, title, contents, category, authorEmail을 돌려줍니다.
