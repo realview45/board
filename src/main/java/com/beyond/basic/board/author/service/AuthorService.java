@@ -5,10 +5,16 @@ import com.beyond.basic.board.author.dtos.*;
 import com.beyond.basic.board.author.repository.AuthorRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,17 +24,40 @@ import java.util.stream.Collectors;
 public class AuthorService {
     private final AuthorRepository authorRepository;
     private final PasswordEncoder passwordEncoder;
+    private final S3Client s3Client;
+    @Value("${aws.s3.bucket}")
+    private String bucket;
     @Autowired
-    public AuthorService(AuthorRepository authorRepository, PasswordEncoder passwordEncoder) {
+    public AuthorService(AuthorRepository authorRepository, PasswordEncoder passwordEncoder, S3Client s3Client) {
         this.authorRepository = authorRepository;
         this.passwordEncoder = passwordEncoder;
+        this.s3Client = s3Client;
     }
 
-    public void create(AuthorCreateDto dto) {
+    public void create(AuthorCreateDto dto, MultipartFile profileImage) {
         if(authorRepository.findByEmail(dto.getEmail()).isPresent()){
             throw new IllegalArgumentException("이메일이 중복입니다.");
         }
-        authorRepository.save(dto.toEntity(passwordEncoder.encode(dto.getPassword())));
+        Author author = authorRepository.save(dto.toEntity(passwordEncoder.encode(dto.getPassword()),profileImage.getOriginalFilename()));
+//        파일업로드를 위한 저장 객체 구성 파일명유일해야함
+        if(profileImage !=null){
+            String fileName = "user-"+author.getId()+"-profileimage"+profileImage.getOriginalFilename();
+            PutObjectRequest request = PutObjectRequest.builder()
+                    .bucket(bucket)
+                    .key(fileName)
+                    .contentType(profileImage.getContentType())//image/jpeg, video/mp4, ...
+                    .build();
+
+            //aws에 이미지업로드(byte형태로)
+            try {
+                s3Client.putObject(request, RequestBody.fromBytes(profileImage.getBytes()));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            //aws에 이미지url추출
+            String imgUrl = s3Client.utilities().getUrl(a->a.bucket(bucket).key(fileName)).toExternalForm();
+            author.updateProfileImageUrl(imgUrl);
+        }
     }
 
     public List<AuthorListDto> findAll() {

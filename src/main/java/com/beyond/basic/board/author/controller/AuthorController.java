@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -28,8 +29,10 @@ public class AuthorController {
 //            (password길이가 8글자이상, 이름이 없거나 이메일이 없을 시 에러)
 //    url : /author/create
     @PostMapping("/create")
-    public ResponseEntity<?> create(@RequestBody @Valid AuthorCreateDto dto){
-        authorService.create(dto);
+    public ResponseEntity<?> create(@Valid AuthorCreateDto dto, @RequestParam MultipartFile profileImage){
+        System.out.println(dto);
+        System.out.println(profileImage.getOriginalFilename());
+        authorService.create(dto, profileImage);
         return ResponseEntity.status(HttpStatus.CREATED).body("회원가입 완료");
     }
 //	2. 회원목록조회 : 모든 회원의 id, name, email의 리스트를 돌려줍니다.
