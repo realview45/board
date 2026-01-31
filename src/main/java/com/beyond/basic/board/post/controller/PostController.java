@@ -5,11 +5,11 @@ import com.beyond.basic.board.post.dtos.PostDetailDto;
 import com.beyond.basic.board.post.dtos.PostListDto;
 import com.beyond.basic.board.post.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 public class PostController {
@@ -30,8 +30,8 @@ public class PostController {
 //    	5-1. 게시글목록조회 : 각 게시글의 id, title, category, authorEmail을 돌려줍니다.
 //    url : /posts
     @GetMapping("/posts")
-    public List<PostListDto> findAll(){
-        List<PostListDto> dtoList =postService.findAll();
+    public Page<PostListDto> findAll(Pageable pageable){
+        Page<PostListDto> dtoList =postService.findAll(pageable);
         return dtoList;
     }
 //    	5-2. 게시글조회 : id를 받아 그 게시글의 id, title, contents, category, authorEmail을 돌려줍니다.

@@ -9,12 +9,11 @@ import com.beyond.basic.board.post.dtos.PostListDto;
 import com.beyond.basic.board.post.repository.PostRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional//org.spring으로 import!
@@ -32,8 +31,9 @@ public class PostService {
         postRepository.save(dto.toEntity(author));
     }
 
-    public List<PostListDto> findAll() {
-        return postRepository.findAll().stream().filter(p->p.getDelYn().equals("N")).map(p->PostListDto.fromEntity(p)).collect(Collectors.toList());
+    public Page<PostListDto> findAll(Pageable pageable) {
+//        return postRepository.findAll().stream().filter(p->p.getDelYn().equals("N")).map(p->PostListDto.fromEntity(p)).collect(Collectors.toList());
+        return postRepository.findAll(pageable).map(p->PostListDto.fromEntity(p));
     }
 
     public PostDetailDto findById(Long id) {
