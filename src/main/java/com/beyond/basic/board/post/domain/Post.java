@@ -1,5 +1,6 @@
 package com.beyond.basic.board.post.domain;
 
+
 import com.beyond.basic.board.author.domain.Author;
 import com.beyond.basic.board.common.domain.BaseTimeEntity;
 import jakarta.persistence.*;
@@ -35,5 +36,8 @@ public class Post extends BaseTimeEntity {
 
     public void delete() {
         this.delYn="Y";
+    }
+    public void updateApointment(String appointment) {
+        this.appointment=appointment;
     }
 }
