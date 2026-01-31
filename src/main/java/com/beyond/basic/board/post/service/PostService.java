@@ -21,6 +21,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @Transactional//org.spring으로 import!
 public class PostService {
@@ -39,10 +42,27 @@ public class PostService {
 
     public Page<PostListDto> findAll(Pageable pageable, PostSearchDto searchDto) {
 //        return postRepository.findAll().stream().filter(p->p.getDelYn().equals("N")).map(p->PostListDto.fromEntity(p)).collect(Collectors.toList());
-        Specification<Post> specification = new Specification<Post>() {
+        Specification<Post> specification = new Specification<Post>() {//specification에 쿼리의 where뒤의 것들을 담아준다.
             @Override
             public Predicate toPredicate(Root<Post> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                return null;
+                List<Predicate> predicateList = new ArrayList<>();
+                //root : 엔티티의 컬럼명을 접근하기위한객체, criteriaBuilder:쿼리를 생성하기위한 객체
+                if(searchDto.getTitle()!=null){
+                    predicateList.add(criteriaBuilder.like(root.get("title"), "%"+searchDto.getTitle()+"%"));
+                }
+                if(searchDto.getCategory()!=null){
+                    predicateList.add(criteriaBuilder.equal(root.get("category"),searchDto.getCategory()));
+                }
+                if(searchDto.getContents()!=null){
+                    predicateList.add(criteriaBuilder.like(root.get("contents"),"%"+searchDto.getContents()+"%"));
+                }
+                Predicate[] predicateArr = new Predicate[predicateList.size()];
+                for(int i=0;i<predicateArr.length;i++){
+                    predicateArr[i]=predicateList.get(i);
+                }
+//                Predicate에는 검색조건들이 담길것이고, 이 Predicate list를 한줄의 predicate로 조립한다.
+                Predicate predicate = criteriaBuilder.and(predicateArr);
+                return predicate;
             }
         };
         return postRepository.findAll(specification, pageable).map(p->PostListDto.fromEntity(p));
