@@ -4,7 +4,6 @@ import com.beyond.basic.board.author.domain.Author;
 import com.beyond.basic.board.author.dtos.*;
 import com.beyond.basic.board.author.repository.AuthorRepository;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,7 +24,10 @@ public class AuthorService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void create(@Valid AuthorCreateDto dto) {
+    public void create(AuthorCreateDto dto) {
+        if(authorRepository.findByEmail(dto.getEmail()).isPresent()){
+            throw new IllegalArgumentException("이메일이 중복입니다.");
+        }
         authorRepository.save(dto.toEntity(passwordEncoder.encode(dto.getPassword())));
     }
 
