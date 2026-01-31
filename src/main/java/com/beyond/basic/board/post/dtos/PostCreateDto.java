@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,7 +23,13 @@ public class PostCreateDto {
     @NotBlank//로그인해야 게시글 작성가능
 //    private String authorEmail;
 
+    @Builder.Default
+    private String appointment="N";
+    @Builder.Default
+    private LocalDateTime appointmentTime=LocalDateTime.now();
+
     public Post toEntity(Author author) {
-        return Post.builder().title(this.title).contents(this.contents).category(this.category).author(author).build();
+        return Post.builder().title(this.title).contents(this.contents).category(this.category).author(author)
+                .appointment(this.appointment).appointmentTime(this.appointmentTime).build();
     }
 }
