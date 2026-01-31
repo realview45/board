@@ -2,9 +2,11 @@ package com.beyond.basic.board.common.exception;
 
 import com.beyond.basic.board.common.dtos.CommonErrorDto;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -45,9 +47,27 @@ public class CommonExceptionHandler {
         e.printStackTrace();
         CommonErrorDto dto = CommonErrorDto.builder()
                 .status_code(400)
+                .error_message("형식에 맞게 요청하십시오.")
+                .build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(dto);
+    }
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<?> AuthorizationDeniedException(Exception e) {
+        e.printStackTrace();
+        CommonErrorDto dto = CommonErrorDto.builder()
+                .status_code(403)
                 .error_message(e.getMessage())
                 .build();
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("형식에 맞게 요청하십시오.");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(dto);
+    }
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<?> DataIntegrityViolationException(Exception e) {
+        e.printStackTrace();
+        CommonErrorDto dto = CommonErrorDto.builder()
+                .status_code(400)//TODO: 확실하지않음
+                .error_message("게시글을 모두 삭제후 요청")
+                .build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(dto);
     }
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> exception(Exception e) {

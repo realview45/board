@@ -19,7 +19,7 @@ public class PostCreateDto {
     private String contents;
     private String category;
     @NotBlank//로그인해야 게시글 작성가능
-    private String authorEmail;
+//    private String authorEmail;
 
     public Post toEntity(Author author) {
         return Post.builder().title(this.title).contents(this.contents).category(this.category).author(author).build();
