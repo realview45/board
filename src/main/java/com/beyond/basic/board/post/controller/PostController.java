@@ -7,6 +7,8 @@ import com.beyond.basic.board.post.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +32,8 @@ public class PostController {
 //    	5-1. 게시글목록조회 : 각 게시글의 id, title, category, authorEmail을 돌려줍니다.
 //    url : /posts
     @GetMapping("/posts")
-    public Page<PostListDto> findAll(Pageable pageable){
+    public Page<PostListDto> findAll(@PageableDefault(size=10,sort="id", direction = Sort.Direction.DESC) Pageable pageable){
+//        페이징처리를 위한 데이터 요청 형식 : localhost:8080/posts?page=0&size=5&sort=title,asc
         Page<PostListDto> dtoList =postService.findAll(pageable);
         return dtoList;
     }
